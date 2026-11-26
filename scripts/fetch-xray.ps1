@@ -24,7 +24,8 @@ try {
   if ($actual -ne $expected) { throw "Xray checksum mismatch. Expected $expected, got $actual." }
   $expanded = Join-Path $temp "expanded"
   New-Item -ItemType Directory -Force $expanded | Out-Null
-  Expand-Archive -Path $archive -DestinationPath $expanded
+  & tar -xf $archive -C $expanded
+  if ($LASTEXITCODE -ne 0) { throw "Failed to extract $archive with tar." }
   foreach ($file in @(@("xray.exe", "xray-x86_64-pc-windows-msvc.exe"), @("wintun.dll", "wintun.dll"))) {
     $source = Join-Path $expanded $file[0]
     if (-not (Test-Path -LiteralPath $source)) { throw "$($file[0]) was not found in the verified Xray archive." }
