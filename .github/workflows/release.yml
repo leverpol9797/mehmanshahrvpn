@@ -7,6 +7,15 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_kind:
+        description: 'Release kind'
+        required: true
+        default: 'windows-android'
+        type: choice
+        options:
+          - windows-android
+          - android-only
 
 # Read-only by default. Only the `publish` job widens this, and only for tag pushes, so a
 # pull request or a branch build cannot write to the repository even if a step misbehaves.
@@ -239,6 +248,10 @@ jobs:
         # fatal on branch and pull request builds, so day-to-day CI still produces
         # artifacts without a certificate - those artifacts are not publishable.
         continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        # Android-only releases skip the Windows signing gate: the tag that ships the
+        # Android APKs may exist before any Windows certificate is configured on this
+        # repository.
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.release_kind != 'android-only' }}
         shell: pwsh
         env:
           WINDOWS_CERT_SUBJECT: ${{ secrets.WINDOWS_CERT_SUBJECT }}
@@ -277,7 +290,7 @@ jobs:
     # Split out so `contents: write` exists only for the step that needs it, and only on a
     # tag. `needs: build` means a failed signing gate stops publication.
     needs: build
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.release_kind == 'android-only') || (github.event_name != 'workflow_dispatch' && startsWith(github.ref, 'refs/tags/')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -297,7 +310,9 @@ jobs:
       - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           generate_release_notes: true
-          files: release/*
+          files: |
+            release/*Android-ARMv7.apk
+            release/*Android-ARM64.apk
           body: |
             # Aethon VPN v2.1.1
 
