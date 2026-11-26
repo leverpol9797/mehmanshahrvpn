@@ -42,7 +42,7 @@ try {
   }
   if ($actual -ne $expected) { throw "Aether core checksum mismatch. Expected $expected, got $actual." }
   $expanded = Join-Path $temp "expanded"
-  Expand-Archive -LiteralPath $archive -DestinationPath $expanded
+  Expand-Archive -Path $archive -DestinationPath $expanded
   $binary = Get-ChildItem -LiteralPath $expanded -Recurse -Filter "aether.exe" | Select-Object -First 1
   if (-not $binary) { throw "aether.exe was not found in the verified upstream archive." }
 
