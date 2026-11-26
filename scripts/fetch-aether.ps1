@@ -1,4 +1,16 @@
 $ErrorActionPreference = "Stop"
+function Get-Sha256Hex {
+  param([Parameter(Mandatory = $true)][string]$Path)
+  $stream = [System.IO.File]::OpenRead($Path)
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    ([System.BitConverter]::ToString($sha.ComputeHash($stream))).Replace("-", "").ToLowerInvariant()
+  }
+  finally {
+    $stream.Dispose()
+    $sha.Dispose()
+  }
+}
 $pins = (Get-Content -LiteralPath (Join-Path $PSScriptRoot "aether-pins.json") -Raw | ConvertFrom-Json).windows
 $version = if ($env:AETHER_CORE_VERSION) { $env:AETHER_CORE_VERSION } else { $pins.version }
 $baseUrl = if ($version -eq $pins.version) { $pins.downloadBaseUrl } else { "https://github.com/CluvexStudio/Aether/releases/download/$version" }
@@ -53,7 +65,7 @@ try {
   # here at build time instead of on a user's machine at connect time.
   $expectedBinary = $pins.binary.$archiveName
   if ($version -eq $pins.version -and $expectedBinary) {
-    $actualBinary = (Get-FileHash -LiteralPath $binary.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    $actualBinary = (Get-Sha256Hex $binary.FullName)
     if ($actualBinary -ne $expectedBinary) {
       throw "The extracted aether.exe does not match the pin in src-tauri/src/process.rs. Expected $expectedBinary, got $actualBinary."
     }
@@ -77,7 +89,7 @@ try {
       }
       $expectedHelper = $pins.pt.$name
       if ($expectedHelper) {
-        $actualHelper = (Get-FileHash -LiteralPath $helper -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualHelper = (Get-Sha256Hex $helper)
         if ($actualHelper -ne $expectedHelper) {
           throw "The extracted pt\$name does not match the pin ($expectedHelper vs $actualHelper)."
         }
