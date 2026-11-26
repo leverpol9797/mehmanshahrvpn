@@ -2610,6 +2610,9 @@ mod tests {
         assert!(authorized_session_dir(Path::new(r"routing\1-2"))
             .unwrap_err()
             .contains("must be absolute"));
+        let local = std::env::var_os("LOCALAPPDATA").expect("LOCALAPPDATA");
+        let base_path = PathBuf::from(local).join(APP_IDENTIFIER).join("routing");
+        fs::create_dir_all(&base_path).expect("create routing base");
         let base = routing_base_dir().unwrap();
         assert!(authorized_session_dir(&base.join("does-not-exist-1-2"))
             .unwrap_err()
@@ -2626,6 +2629,9 @@ mod tests {
     #[cfg(windows)]
     #[test]
     fn traversal_out_of_the_base_is_resolved_and_then_refused() {
+        let local = std::env::var_os("LOCALAPPDATA").expect("LOCALAPPDATA");
+        let base_path = PathBuf::from(local).join(APP_IDENTIFIER).join("routing");
+        fs::create_dir_all(&base_path).expect("create routing base");
         let base = routing_base_dir().unwrap();
         let escape = base.join("..").join("..");
         let error = authorized_session_dir(&escape).unwrap_err();
@@ -2638,6 +2644,11 @@ mod tests {
     #[cfg(windows)]
     #[test]
     fn a_session_directory_that_is_gone_is_nothing_to_recover_not_an_error() {
+        // The routing base is created lazily by the runtime; on a fresh machine the
+        // directory may not exist yet, so make sure it does before resolving a session.
+        let local = std::env::var_os("LOCALAPPDATA").expect("LOCALAPPDATA");
+        let base_path = PathBuf::from(local).join(APP_IDENTIFIER).join("routing");
+        fs::create_dir_all(&base_path).expect("create routing base");
         let base = routing_base_dir().unwrap();
         assert_eq!(
             authorized_session_dir_if_present(&base.join("already-removed-1-2")).unwrap(),
