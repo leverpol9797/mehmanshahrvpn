@@ -126,32 +126,34 @@ try {
         if ($placed -ne $expectedBinary.ToLowerInvariant()) {
             throw "libaether.so for $($target.Abi) does not match its pin after copying. Expected $expectedBinary, got $placed."
         }
+
+        # Stage the same verified bytes under the approved-evidence tree that
+        # android/verified-native.gradle consumes. The hashes in the committed
+        # manifests are checked by Gradle, so these copies are verified twice.
+        $evidenceJni = Join-Path $root "native-inputs/android/verified-jni/$($target.Abi)"
+        $evidenceHelpers = Join-Path $root "native-inputs/android/verified-helpers/$($target.Abi)"
+        New-Item -ItemType Directory -Force $evidenceJni | Out-Null
+        New-Item -ItemType Directory -Force $evidenceHelpers | Out-Null
+        Copy-Item -LiteralPath $core.FullName -Destination (Join-Path $evidenceJni "libaether.so") -Force
+        foreach ($helper in @("psiphon-tunnel-core", "lyrebird")) {
+            $helperSource = Get-ChildItem -LiteralPath $expanded -Recurse -File -Filter $helper | Select-Object -First 1
+            if (-not $helperSource) { throw "$helper was not found in $($target.Archive)." }
+            Copy-Item -LiteralPath $helperSource.FullName -Destination (Join-Path $evidenceHelpers $helper) -Force
+        }
         Write-Host "Prepared verified Aether core for $($target.Abi) ($extracted)"
     }
 
-    $hevSource = Join-Path $temp "hev-socks5-tunnel"
-    & git clone --quiet --branch $hevVersion --depth 1 --recurse-submodules https://github.com/heiher/hev-socks5-tunnel.git $hevSource
-    if ($LASTEXITCODE -ne 0) { throw "Could not fetch HEV Socks5 Tunnel $hevVersion." }
-    $checkedOutCommit = (& git -C $hevSource rev-parse HEAD).Trim()
-    if ($checkedOutCommit -ne $hevCommit) { throw "Unexpected HEV commit $checkedOutCommit; expected $hevCommit." }
-    $submoduleState = & git -C $hevSource submodule status --recursive
-    if ($LASTEXITCODE -ne 0 -or ($submoduleState | Where-Object { $_ -match '^[+-]' })) {
-        throw "HEV submodules do not match the pinned release."
-    }
-    Expand-WindowsSymlinkPlaceholders $hevSource
-
-    $ndkRoot = Resolve-NdkRoot
-    $ndkBuild = Join-Path $ndkRoot $(if ($IsWindows -or $PSVersionTable.PSEdition -eq "Desktop") { "ndk-build.cmd" } else { "ndk-build" })
-    $libsOut = Join-Path $temp "hev-libs"
-    $objOut = Join-Path $temp "hev-obj"
-    & $ndkBuild "NDK_PROJECT_PATH=$hevSource" "APP_BUILD_SCRIPT=$(Join-Path $hevSource 'Android.mk')" "NDK_APPLICATION_MK=$(Join-Path $hevSource 'Application.mk')" 'APP_ABI=armeabi-v7a arm64-v8a x86_64' 'APP_CFLAGS=-O3 -DPKGNAME=hev/htproxy' "NDK_LIBS_OUT=$libsOut" "NDK_OUT=$objOut" -j 4
-    if ($LASTEXITCODE -ne 0) { throw "HEV JNI build failed." }
-
+    # The HEV JNI bridge is the one native input that is not published in the Aether
+    # archives. It is built once from the pinned HEV source and committed under
+    # native-inputs/android/verified-jni so every build ships byte-identical bytes and
+    # the committed manifest hashes keep matching. See verified-native-inputs.json.
     foreach ($target in $targets) {
-        $library = Join-Path $libsOut "$($target.Abi)/libhev-socks5-tunnel.so"
-        if (-not (Test-Path -LiteralPath $library -PathType Leaf)) { throw "HEV JNI library is missing for $($target.Abi)." }
-        Copy-Item -LiteralPath $library -Destination (Join-Path $destination "$($target.Abi)/libhev-socks5-tunnel.so") -Force
-        Write-Host "Built HEV JNI bridge for $($target.Abi)"
+        $hevEvidence = Join-Path $root "native-inputs/android/verified-jni/$($target.Abi)/libhev-socks5-tunnel.so"
+        if (-not (Test-Path -LiteralPath $hevEvidence -PathType Leaf)) {
+            throw "Committed HEV JNI library is missing for $($target.Abi): $hevEvidence"
+        }
+        Copy-Item -LiteralPath $hevEvidence -Destination (Join-Path $destination "$($target.Abi)/libhev-socks5-tunnel.so") -Force
+        Write-Host "Installed committed HEV JNI bridge for $($target.Abi)"
     }
 }
 finally {

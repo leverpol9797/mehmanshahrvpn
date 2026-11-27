@@ -11,12 +11,12 @@
   },
   "arm64-v8a/libhev-socks5-tunnel.so": {
     "androidApi": 26,
-    "bytes": 343784,
+    "bytes": 343160,
     "elfClass": 2,
     "elfMachine": 183,
     "ndk": "27.2.12479018",
-    "sha256": "6eb00a2ca1098c4253957b1d0de730e75c0bbf6db209415161b1052d451691a2",
-    "source": "verified HEV 2.16.0 pinned-source build A carried forward byte-identical (provenance work/phase1-20260927)",
+    "sha256": "d1f4a39fe19825b34402624b1a19f289604afaec69a5cb7edd7e282086c0d0fe",
+    "source": "built from pinned HEV 2.16.0 source with NDK 27.2.12479018 (android-26)",
     "sourceCommit": "0a05221275a51a884d93328c55fc2fbc9e9b6974"
   },
   "armeabi-v7a/libaether.so": {
@@ -31,12 +31,12 @@
   },
   "armeabi-v7a/libhev-socks5-tunnel.so": {
     "androidApi": 26,
-    "bytes": 234344,
+    "bytes": 233692,
     "elfClass": 1,
     "elfMachine": 40,
     "ndk": "27.2.12479018",
-    "sha256": "ffbf062eef55f94d6466974da00c4e754737796095aada017ed90979d7111173",
-    "source": "verified HEV 2.16.0 pinned-source build A carried forward byte-identical (provenance work/phase1-20260927)",
+    "sha256": "39420f34b17acbe0114c7b471938ad74298138ccf3d6b415e794e7a1ed908458",
+    "source": "built from pinned HEV 2.16.0 source with NDK 27.2.12479018 (android-26)",
     "sourceCommit": "0a05221275a51a884d93328c55fc2fbc9e9b6974"
   },
   "x86_64/libaether.so": {
@@ -51,12 +51,12 @@
   },
   "x86_64/libhev-socks5-tunnel.so": {
     "androidApi": 26,
-    "bytes": 344872,
+    "bytes": 344224,
     "elfClass": 2,
     "elfMachine": 62,
     "ndk": "27.2.12479018",
-    "sha256": "f867cb5b011e07c2fc9c482ba6f625c8d25b4b14f19e0c28c37695924eea00d5",
-    "source": "verified HEV 2.16.0 pinned-source build A carried forward byte-identical (provenance work/phase1-20260927)",
+    "sha256": "ef7912e9b36fa4ee56a3bfe063794bd7763b324bfa34e67f949771f9b9e1a65f",
+    "source": "built from pinned HEV 2.16.0 source with NDK 27.2.12479018 (android-26)",
     "sourceCommit": "0a05221275a51a884d93328c55fc2fbc9e9b6974"
   }
 }

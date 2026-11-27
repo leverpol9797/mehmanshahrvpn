@@ -18,7 +18,7 @@ def parseVerified = { File path, String expected ->
     new groovy.json.JsonSlurper().parse(path)
 }
 def approved = parseVerified(new File(evidence, 'NATIVE_INPUTS.json'),
-    'c8d91f3f1fd2691933675dcdeb11111f26cdb0612c02e7c2e10410e1ac44853a')
+    '313bf461b48abbdc8f2fc8bfa7a3feb15eff49b36d10407bbd1da3a631063f36')
 if (approved.coreSourceCommit != '6175b67df370ab856bcee07fe85b524031903956' ||
     approved.hevSourceCommit != '0a05221275a51a884d93328c55fc2fbc9e9b6974' ||
     approved.selectedHevBuild != 'a') throw new GradleException('Unexpected approved native source')

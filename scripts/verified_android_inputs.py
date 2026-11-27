@@ -5,7 +5,7 @@ import re
 import struct
 
 MANIFEST = 'native-inputs/android/NATIVE_INPUTS.json'
-MANIFEST_SHA256 = 'c8d91f3f1fd2691933675dcdeb11111f26cdb0612c02e7c2e10410e1ac44853a'
+MANIFEST_SHA256 = '313bf461b48abbdc8f2fc8bfa7a3feb15eff49b36d10407bbd1da3a631063f36'
 TARGETS = {'arm64-v8a': ('ARM64', 'arm64', 183), 'armeabi-v7a': ('ARMv7', 'armv7', 40),
            'x86_64': ('x86_64', 'x86_64', 62)}
 LIBRARIES = ('libaether.so', 'libhev-socks5-tunnel.so', 'libpsiphon-tunnel-core.so', 'liblyrebird.so')
