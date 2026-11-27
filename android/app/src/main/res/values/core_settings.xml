@@ -15,7 +15,7 @@
     <string name="route_block">Block destinations</string>
     <string name="route_direct">Bypass tunnel for destinations</string>
     <string name="route_rules_summary">One rule per line: example.com, full:example.com, keyword:ads, 10.0.0.0/8, cidr:fd00::/8, port:25, or private. Block takes priority. Domain rules require visible DNS names, SNI, or HTTP Host.</string>
-    <string name="route_direct_summary">Matching traffic leaves the tunnel directly. These Core rules apply only to traffic routed through Aethon; Android app exclusions take effect first.</string>
+    <string name="route_direct_summary">Matching traffic leaves the tunnel directly. These Core rules apply only to traffic routed through MehmanshahrVpn; Android app exclusions take effect first.</string>
     <string name="http_proxy">HTTP proxy for Device VPN</string>
     <string name="http_proxy_summary">Optional in Device VPN mode, for example 127.0.0.1:1820. Use a different port from SOCKS and Tor. Proxy mode uses HTTP 127.0.0.1:1818 without changing this saved value.</string>
     <string name="tor_proxy">Tor Routing</string>

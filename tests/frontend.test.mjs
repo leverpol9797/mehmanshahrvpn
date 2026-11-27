@@ -243,7 +243,7 @@ test('EN/FA translations complete, RTL, no mojibake, no English fallback inside 
   assert.match(i18n, /document\.documentElement\.dir=language==='fa'\?'rtl':'ltr'/);
   assert.match(css, /\[dir=rtl\]/);
   // No fallback English strings inside Persian (product/protocol names excepted).
-  const allowedEnglish = /^(MASQUE|WireGuard|gool|MIM|HTTP|SOCKS5|VPN|Aethon|Aether|Psiphon|Tor|ECH|Base64|WARP|MTU|IPv6|DNS|TLS|DPI|QUIC|TCP|ipsum)/;
+  const allowedEnglish = /^(MASQUE|WireGuard|gool|MIM|HTTP|SOCKS5|VPN|MehmanshahrVpn|Aethon|Aether|Psiphon|Tor|ECH|Base64|WARP|MTU|IPv6|DNS|TLS|DPI|QUIC|TCP|ipsum)/;
   for (const [key, value] of Object.entries(translations.fa)) {
     if (typeof value === 'string' && value.trim() && !/[\u0600-\u06FF]/.test(value) && value.length > 3) {
       assert.match(value, allowedEnglish, `untranslated fa value for ${key}: ${value}`);
@@ -510,16 +510,16 @@ test('About: version, core version, links, Telegram; no development diagnostics'
   assert.match(html, /id="aboutCoreVersion"/);
   assert.match(html, /id="aboutTelegram"/);
   assert.match(html, /CluvexStudio\/Aether/);
-  assert.match(html, /hamvex\/AetherGUI/);
+  assert.match(html, /leverpol9797\/mehmanshahrvpn/);
   assert.match(app, /refreshAboutCore/);
-  assert.match(app, /tg:\/\/resolve\?domain=hamvex/);
+  assert.match(app, /github.com\/leverpol9797\/mehmanshahrvpn/);
   // No dev diagnostics in consumer About.
   const aboutStart = html.indexOf('id="view-about"');
   const aboutEnd = html.indexOf('</main>');
   const about = html.slice(aboutStart, aboutEnd);
   assert.ok(!about.includes('id="diag'));
   // No duplicate version labels.
-  assert.equal((about.match(/v2\.2\.0/g) || []).length, 1);
+  assert.equal((about.match(/v2\.2\.1/g) || []).length, 1);
 });
 
 test('Windows VPN lifecycle retains elevation, recovery, TUN readiness, and clean shutdown', async () => {
@@ -540,7 +540,7 @@ test('split tunneling: app picker with search, system apps, protection, missing 
   assert.match(app, /showSystemApps=false/);
   // Toggling never deletes hidden selections.
   assert.doesNotMatch(app, /selected\.delete\(\)/);
-  // Aethon-protective executables are never selectable.
+  // MehmanshahrVpn-protective executables are never selectable.
   assert.match(lib, /fn is_protected_executable/);
   assert.match(lib, /"aether\.exe" \| "aethon\.exe" \| "xray\.exe" \| "psiphon-tunnel-core\.exe" \| "lyrebird\.exe"/);
   // Missing/uninstalled apps render gracefully.

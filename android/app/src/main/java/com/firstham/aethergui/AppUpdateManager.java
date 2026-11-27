@@ -135,16 +135,16 @@ final class AppUpdateManager {
             sendState(context);
             return;
         }
-        JSONObject apk = findAsset(release.optJSONArray("assets"), String.format(Locale.US, UpdateConfig.RELEASE_ASSET, tag));
+        JSONObject apk = findAsset(release.optJSONArray("assets"), UpdateConfig.releaseAsset(tag));
         if (apk == null) throw new IOException("The latest release has no Android update package");
         String downloadUrl = apk.optString("browser_download_url", "");
-        if (!downloadUrl.startsWith(UpdateConfig.RELEASE_DOWNLOAD_PREFIX)) throw new IOException("The update URL is not an official Aethon release");
+        if (!downloadUrl.startsWith(UpdateConfig.RELEASE_DOWNLOAD_PREFIX)) throw new IOException("The update URL is not an official MehmanshahrVpn release");
         String checksum = apk.optString("digest", "").replaceFirst("^sha256:", "");
         if (checksum.isEmpty()) {
             JSONObject sums = findAsset(release.optJSONArray("assets"), UpdateConfig.CHECKSUM_ASSET);
             if (sums != null) {
                 String sumsUrl = sums.optString("browser_download_url", "");
-                if (!sumsUrl.startsWith(UpdateConfig.RELEASE_DOWNLOAD_PREFIX)) throw new IOException("The checksum URL is not an official Aethon release");
+                if (!sumsUrl.startsWith(UpdateConfig.RELEASE_DOWNLOAD_PREFIX)) throw new IOException("The checksum URL is not an official MehmanshahrVpn release");
                 checksum = checksumFromFile(getText(sumsUrl), apk.optString("name"));
             }
         }
@@ -181,7 +181,7 @@ final class AppUpdateManager {
             File dir = app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
             if (dir == null) throw new IOException("External update storage is unavailable");
             if (!dir.exists() && !dir.mkdirs()) throw new IOException("Could not create the update directory");
-            File apk = new File(dir, String.format(Locale.US, UpdateConfig.RELEASE_ASSET, version));
+            File apk = new File(dir, UpdateConfig.releaseAsset(version));
             if (apk.exists() && !apk.delete()) throw new IOException("Could not replace the previous update");
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url)).setTitle(app.getString(R.string.new_update_title))
                     .setDescription(app.getString(R.string.update_downloading)).setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -357,7 +357,7 @@ final class AppUpdateManager {
 
     private static String getText(String url) throws IOException {
         HttpURLConnection connection = openHttpsOnly(url);
-        connection.setConnectTimeout(15_000); connection.setReadTimeout(30_000); connection.setRequestProperty("User-Agent", "Aethon-Android"); connection.setRequestProperty("Accept", "application/vnd.github+json");
+        connection.setConnectTimeout(15_000); connection.setReadTimeout(30_000); connection.setRequestProperty("User-Agent", "MehmanshahrVpn-Android"); connection.setRequestProperty("Accept", "application/vnd.github+json");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder result = new StringBuilder(); String line; while ((line = reader.readLine()) != null) result.append(line).append('\n'); return result.toString();
         } finally { connection.disconnect(); }

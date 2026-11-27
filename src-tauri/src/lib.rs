@@ -726,7 +726,7 @@ fn configure_lan_firewall(enabled: bool) -> Result<(), String> {
                 "firewall",
                 "add",
                 "rule",
-                "name=Aethon LAN SOCKS5",
+                "name=MehmanshahrVpn LAN SOCKS5",
                 "dir=in",
                 "action=allow",
                 "protocol=TCP",
@@ -740,7 +740,7 @@ fn configure_lan_firewall(enabled: bool) -> Result<(), String> {
                 "firewall",
                 "delete",
                 "rule",
-                "name=Aethon LAN SOCKS5",
+                "name=MehmanshahrVpn LAN SOCKS5",
             ]
         };
         let output = command
@@ -836,7 +836,7 @@ async fn pick_internal_socks_port() -> Result<String, String> {
         }
     }
     Err(
-        "Aethon could not reserve an internal underlay port for the privacy chain. All \
+        "MehmanshahrVpn could not reserve an internal underlay port for the privacy chain. All \
          candidate loopback ports are occupied or reserved by Windows. Close conflicting \
          applications and retry, or check 'netsh interface ipv4 show excludedportrange \
          protocol=tcp'."
@@ -2607,7 +2607,7 @@ async fn system_trace_probe_once(
     emit_data_plane_phase(app, "tls", attempt, tls_ms, "success", "", "");
 
     let http_started = Instant::now();
-        tls.write_all(b"GET /cdn-cgi/trace HTTP/1.1\r\nHost: www.cloudflare.com\r\nUser-Agent: Aethon/2.2.0\r\nAccept: text/plain\r\nConnection: close\r\n\r\n")
+        tls.write_all(b"GET /cdn-cgi/trace HTTP/1.1\r\nHost: www.cloudflare.com\r\nUser-Agent: MehmanshahrVpn/2.2.1\r\nAccept: text/plain\r\nConnection: close\r\n\r\n")
         .await
         .map_err(|error| ProbeFailure {
             message: format!("HTTPS request write failed: {error}"),
@@ -3271,7 +3271,7 @@ async fn vpn_probe(
     settings.validate()?;
     let generation = state.process.generation().await;
     if state.process.connection_state().await != "connected" {
-        return Err("Aethon is not connected".into());
+        return Err("MehmanshahrVpn is not connected".into());
     }
     let probe = run_trace_probe(
         &app,
@@ -3339,7 +3339,7 @@ async fn vpn_ping(
     settings.validate()?;
     let generation = state.process.generation().await;
     if state.process.connection_state().await != "connected" {
-        return Err("Aethon is not connected".into());
+        return Err("MehmanshahrVpn is not connected".into());
     }
     let context = active_attempt()
         .read()
@@ -3398,7 +3398,7 @@ async fn vpn_location(
     settings.validate()?;
     let generation = state.process.generation().await;
     if state.process.connection_state().await != "connected" {
-        return Err("Aethon is not connected".into());
+        return Err("MehmanshahrVpn is not connected".into());
     }
     let context = active_attempt()
         .read()
@@ -3720,7 +3720,7 @@ async fn connection_test(settings: Settings) -> Result<String, String> {
         .map_err(display_err)
 }
 fn tray_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
-    let show = MenuItem::with_id(app, "show", "Show Aethon", true, None::<&str>)?;
+    let show = MenuItem::with_id(app, "show", "Show MehmanshahrVpn", true, None::<&str>)?;
     let connect = MenuItem::with_id(app, "connect", "Connect", true, None::<&str>)?;
     let disconnect = MenuItem::with_id(app, "disconnect", "Disconnect", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Exit", true, None::<&str>)?;
@@ -3899,7 +3899,7 @@ pub fn run() {
                         .cloned()
                         .expect("application icon"),
                 )
-                .tooltip("Aethon - Disconnected")
+                .tooltip("MehmanshahrVpn - Disconnected")
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .on_menu_event(move |app, event| match event.id.as_ref() {
@@ -3954,7 +3954,7 @@ pub fn run() {
             }
         })
         .run(tauri::generate_context!())
-        .expect("error while running Aethon");
+        .expect("error while running MehmanshahrVpn");
 }
 
 fn apply_compact_window_default(app: &AppHandle) {

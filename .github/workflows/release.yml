@@ -332,8 +332,9 @@ jobs:
           files: |
             release/*Android-ARMv7.apk
             release/*Android-ARM64.apk
+            release/SHA256SUMS.txt
           body: |
-            # MehmanshahrVpn v2.2.0
+            # MehmanshahrVpn v2.2.1
 
             Android release of MehmanshahrVpn (ARMv7 + ARM64 APKs).
 

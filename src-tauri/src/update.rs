@@ -6,8 +6,8 @@ use tauri::{AppHandle, Emitter, Manager};
 use tokio::io::AsyncWriteExt;
 use tokio::sync::Mutex;
 
-const RELEASE_API: &str = "https://api.github.com/repos/hamvex/AetherGUI/releases?per_page=30";
-const DOWNLOAD_PREFIX: &str = "https://github.com/hamvex/AetherGUI/releases/download/";
+const RELEASE_API: &str = "https://api.github.com/repos/leverpol9797/mehmanshahrvpn/releases?per_page=30";
+const DOWNLOAD_PREFIX: &str = "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/";
 const CHECKSUM_ASSET: &str = "SHA256SUMS.txt";
 
 /// The publisher every downloaded installer must be signed by, pinned into the binary at
@@ -36,7 +36,7 @@ fn pinned_release_url(candidate: &str) -> Result<reqwest::Url, String> {
         && url.password().is_none()
         && url.path().starts_with(prefix.path());
     if !pinned {
-        return Err("The release URL is not an official Aethon release URL".into());
+        return Err("The release URL is not an official MehmanshahrVpn release URL".into());
     }
     Ok(url)
 }
@@ -78,7 +78,7 @@ fn verify_publisher(path: &std::path::Path, handle: Option<&std::fs::File>) -> R
         .map_err(|error| format!("The installer was rejected: {error}"))?;
     match EXPECTED_PUBLISHER {
         Some(expected) if !signer.is(expected) => Err(format!(
-            "The installer is signed by \"{}\" but Aethon updates must be signed by \"{expected}\"",
+            "The installer is signed by \"{}\" but MehmanshahrVpn updates must be signed by \"{expected}\"",
             signer.name
         )),
         _ => Ok(()),
@@ -178,7 +178,7 @@ struct UpdateProgress {
 
 fn client() -> Result<reqwest::Client, String> {
     reqwest::Client::builder()
-        .user_agent(concat!("Aethon-Update/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("MehmanshahrVpn-Update/", env!("CARGO_PKG_VERSION")))
         .timeout(std::time::Duration::from_secs(60))
         .build()
         .map_err(|error| error.to_string())
@@ -223,7 +223,7 @@ async fn checksum_from_manifest(
         &release.tag_name,
         CHECKSUM_ASSET,
     )
-    .map_err(|_| "The checksum URL is not an official Aethon release URL".to_string())?;
+    .map_err(|_| "The checksum URL is not an official MehmanshahrVpn release URL".to_string())?;
     let text = http
         .get(source)
         .send()
@@ -299,7 +299,7 @@ async fn latest_update() -> Result<UpdateInfo, String> {
         &release.tag_name,
         &installer_name,
     )
-    .map_err(|_| "The installer URL is not an official Aethon release URL".to_string())?;
+    .map_err(|_| "The installer URL is not an official MehmanshahrVpn release URL".to_string())?;
     let sha256 = match asset
         .digest
         .as_deref()
@@ -327,7 +327,7 @@ pub async fn check_for_update(app: AppHandle) -> Result<UpdateInfo, String> {
     if info.available {
         if let Some(tray) = app.tray_by_id("main") {
             let _ = tray.set_tooltip(Some(format!(
-                "Aethon {} update available",
+                "MehmanshahrVpn {} update available",
                 info.latest_version
             )));
         }
@@ -342,7 +342,7 @@ pub async fn download_update(
 ) -> Result<String, String> {
     let info = latest_update().await?;
     if !info.available {
-        return Err("Aethon is already up to date".into());
+        return Err("MehmanshahrVpn is already up to date".into());
     }
     let directory = app
         .path()
@@ -501,7 +501,7 @@ mod tests {
 
     #[test]
     fn a_genuine_release_asset_url_is_accepted_unchanged() {
-        let asset = "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe";
+        let asset = "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe";
         assert_eq!(asset, pinned_release_url(asset).unwrap().as_str());
     }
 
@@ -510,14 +510,14 @@ mod tests {
         // The whole point of parsing: every one of these passes a `starts_with` test on
         // DOWNLOAD_PREFIX, and every one of them resolves somewhere else.
         for escape in [
-            "https://github.com/hamvex/AetherGUI/releases/download/../../../../evil.exe",
-            "https://github.com/hamvex/AetherGUI/releases/download/v1/../../../../../evil.exe",
-            "https://github.com/hamvex/AetherGUI/releases/download/..%2f..%2f..%2f..%2fevil.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/../../../../evil.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v1/../../../../../evil.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/..%2f..%2f..%2f..%2fevil.exe",
         ] {
             let resolved = reqwest::Url::parse(escape).unwrap();
             let escaped = !resolved
                 .path()
-                .starts_with("/hamvex/AetherGUI/releases/download/");
+                .starts_with("/leverpol9797/mehmanshahrvpn/releases/download/");
             assert_eq!(
                 escaped,
                 pinned_release_url(escape).is_err(),
@@ -554,15 +554,15 @@ mod tests {
         let tag = "v2.1.1";
         let asset = "Aethon-VPN-v2.1.1-Windows-x64-Installer.exe";
         let genuine =
-            format!("https://github.com/hamvex/AetherGUI/releases/download/{tag}/{asset}");
+            format!("https://github.com/leverpol9797/mehmanshahrvpn/releases/download/{tag}/{asset}");
         assert_eq!(
             genuine,
             pinned_release_asset(&genuine, tag, asset).unwrap().as_str()
         );
         assert_eq!(
-            "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/SHA256SUMS.txt",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/SHA256SUMS.txt",
             pinned_release_asset(
-                "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/SHA256SUMS.txt",
+                "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/SHA256SUMS.txt",
                 tag,
                 CHECKSUM_ASSET
             )
@@ -574,17 +574,17 @@ mod tests {
         // lets them through. None of them is the artifact that was asked for.
         for mismatched in [
             // A different file in the same release.
-            "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/something-else.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/something-else.exe",
             // The right filename, but attached to a different release.
-            "https://github.com/hamvex/AetherGUI/releases/download/v0.1.0/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v0.1.0/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
             // The right name buried one level deeper than a release asset can live.
-            "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/nested/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/nested/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
             // The name as a query string rather than the path that is actually fetched.
-            "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/other.exe?name=Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/other.exe?name=Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
             // The name as a fragment, likewise never sent to the server.
-            "https://github.com/hamvex/AetherGUI/releases/download/v2.1.1/other.exe#Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/v2.1.1/other.exe#Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
             // No tag segment at all.
-            "https://github.com/hamvex/AetherGUI/releases/download/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
+            "https://github.com/leverpol9797/mehmanshahrvpn/releases/download/Aethon-VPN-v2.1.1-Windows-x64-Installer.exe",
         ] {
             assert!(
                 pinned_release_asset(mismatched, tag, asset).is_err(),

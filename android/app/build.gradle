@@ -44,11 +44,11 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId 'io.github.hamvex.aethergui'
+        applicationId 'io.github.hamvex.mehmanshahrvpn'
         minSdk 26
         targetSdk 35
-        versionCode 29
-        versionName '2.2.0'
+        versionCode 30
+        versionName '2.2.1'
         buildConfigField 'String', 'AETHER_VERSION', '"' + corePins.version + '"'
         buildConfigField 'String', 'AETHER_ARM64_SHA256', '"' + corePins.binary['aether-android-arm64.tar.gz'] + '"'
         buildConfigField 'String', 'AETHER_ARMV7_SHA256', '"' + corePins.binary['aether-android-armv7.tar.gz'] + '"'

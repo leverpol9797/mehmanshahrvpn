@@ -22,7 +22,7 @@
     <string name="route_block">مسدود کردن مقصدها</string>
     <string name="route_direct">عبور مستقیم مقصدها بیرون از تونل</string>
     <string name="route_rules_summary">هر قانون در یک خط: example.com، full:example.com، keyword:ads، 10.0.0.0/8، cidr:fd00::/8، port:25 یا private. مسدودسازی اولویت دارد. قانون دامنه به نام DNS، SNI یا HTTP Host قابل مشاهده نیاز دارد.</string>
-    <string name="route_direct_summary">ترافیک مطابق قانون مستقیم و بیرون از تونل می‌رود. این قوانین فقط بر ترافیک عبوری از Aethon اعمال می‌شوند؛ استثنای برنامه‌های اندروید اولویت دارد.</string>
+    <string name="route_direct_summary">ترافیک مطابق قانون مستقیم و بیرون از تونل می‌رود. این قوانین فقط بر ترافیک عبوری از MehmanshahrVpn اعمال می‌شوند؛ استثنای برنامه‌های اندروید اولویت دارد.</string>
     <string name="http_proxy">پروکسی HTTP برای وی‌پی‌ان دستگاه</string>
     <string name="http_proxy_summary">در حالت VPN دستگاه اختیاری است؛ مانند 127.0.0.1:1820. پورت باید با SOCKS و Tor متفاوت باشد. حالت پروکسی از HTTP با آدرس 127.0.0.1:1818 استفاده می‌کند و این مقدار ذخیره‌شده را تغییر نمی‌دهد.</string>
     <string name="tor_proxy">مسیریابی تور</string>

@@ -97,7 +97,7 @@ def main():
     all_pins = json.loads((ROOT / 'scripts/aether-pins.json').read_text())
     pins = all_pins['android']
     assert pins['version'] == 'v2.3.0'
-    assert json.loads((ROOT / 'package.json').read_text())['version'] == '2.2.0'
+    assert json.loads((ROOT / 'package.json').read_text())['version'] == '2.2.1'
     targets = TARGETS
     if args.preflight:
         print(json.dumps({'build': identifier, 'nativePayloads': len(native_manifest),
@@ -127,8 +127,8 @@ def main():
     stamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     status = git('status', '--porcelain=v1', '--untracked-files=all')
     sources = source_files()
-    state = dict(build=identifier, developmentBuild=development_build, appVersion='2.2.0', versionName='2.2.0', versionCode=29,
-                 packageName='io.github.hamvex.aethergui', commit=git('rev-parse', 'HEAD'), branch=git('branch', '--show-current'),
+    state = dict(build=identifier, developmentBuild=development_build, appVersion='2.2.1', versionName='2.2.1', versionCode=30,
+                 packageName='io.github.hamvex.mehmanshahrvpn', commit=git('rev-parse', 'HEAD'), branch=git('branch', '--show-current'),
                  gitState='dirty' if status else 'clean', changedFiles=status.splitlines(), timestampUtc=stamp,
                  coreVersion=pins['version'], coreSourceCommit=pins['sourceCommit'], platform='Android',
                  sourceFiles=sources, nativeInputs=native_manifest, changesIncluded=args.changes,
@@ -182,7 +182,7 @@ def main():
     sdk_tools = Path(args.sdk) / 'build-tools/35.0.0'
     artifacts = []
     for element in metadata['elements']:
-        assert element['versionName'] == state['versionName'] and element['versionCode'] == 29
+        assert element['versionName'] == state['versionName'] and element['versionCode'] == 30
         apk = output / element['outputFile']
         abis = [f['value'] for f in element['filters'] if f['filterType'] == 'ABI']
         expected_abis = set(abis) if abis else set(targets)
@@ -194,14 +194,14 @@ def main():
             for entry in native_entries:
                 assert digest(archive.read(entry)) == native_manifest[entry[4:]]['sha256']
         badging = subprocess.check_output([str(sdk_tools / 'aapt2.exe'), 'dump', 'badging', str(apk)], env=env).decode()
-        assert f"name='{state['packageName']}'" in badging and f"versionName='{state['versionName']}'" in badging and "versionCode='29'" in badging
+        assert f"name='{state['packageName']}'" in badging and f"versionName='{state['versionName']}'" in badging and "versionCode='30'" in badging
         certs = subprocess.check_output([str(sdk_tools / 'apksigner.bat'), 'verify', '--verbose', '--print-certs', str(apk)], env=env).decode()
         assert 'Verified using v2 scheme (APK Signature Scheme v2): true' in certs
         assert re.search(r'Signer #1 certificate SHA-256 digest: (\w+)', certs).group(1).lower() == expected_signer
         subprocess.run([str(sdk_tools / 'zipalign.exe'), '-c', '-P', '16', '4', str(apk)], check=True, env=env, stdout=subprocess.DEVNULL)
         (logs / f'{label}-badging.txt').write_text(badging)
         (logs / f'{label}-signatures.txt').write_text(certs)
-        final = destination / f'Aethon-v2.2.0-Android-{label}.apk'
+        final = destination / f'MehmanshahrVpn-v2.2.1-Android-{label}.apk'
         with final.open('xb') as dst, apk.open('rb') as src:
             shutil.copyfileobj(src, dst)
         assert digest(final.read_bytes()) == digest(apk.read_bytes())

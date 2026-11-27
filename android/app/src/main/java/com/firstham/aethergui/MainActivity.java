@@ -62,7 +62,7 @@ public final class MainActivity extends AppCompatActivity {
     private static final int APPS_REQUEST = 43;
     private static final int EXPORT_REQUEST = 44;
     private static final int IMPORT_REQUEST = 45;
-    private static final String INTERNAL_PERMISSION = "io.github.hamvex.aethergui.permission.INTERNAL";
+    private static final String INTERNAL_PERMISSION = "io.github.hamvex.mehmanshahrvpn.permission.INTERNAL";
     /** Taps closer together than this are swallowed so a burst cannot restart the tunnel. */
     private static final long CONNECT_DEBOUNCE_MS = 900L;
     /** How long the UI may show "Checking" before it gives up on the service answering. */
@@ -463,7 +463,7 @@ public final class MainActivity extends AppCompatActivity {
         binding.lanSwitch.setOnCheckedChangeListener((button, checked) -> { if (restoringSettings) return; preferences.edit().putBoolean("lanEnabled", checked).apply(); saveSettings(); if ("connected".equals(state)) startService(new Intent(this, AetherVpnService.class).setAction(AetherVpnService.ACTION_SET_LAN).putExtra("enabled", checked).putExtra("port", 18190)); updateLanLabel(); });
         binding.copyLanAddressButton.setOnClickListener(v -> copyLanValue(false));
         binding.copyLanPortButton.setOnClickListener(v -> copyLanValue(true));
-        binding.exportSettingsButton.setOnClickListener(v -> startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json").putExtra(Intent.EXTRA_TITLE, "aethon-settings-backup.json"), EXPORT_REQUEST));
+        binding.exportSettingsButton.setOnClickListener(v -> startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json").putExtra(Intent.EXTRA_TITLE, "mehmanshahrvpn-settings-backup.json"), EXPORT_REQUEST));
         binding.importSettingsButton.setOnClickListener(v -> startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("application/json").addCategory(Intent.CATEGORY_OPENABLE), IMPORT_REQUEST));
         binding.notificationSettingsButton.setOnClickListener(v -> openNotificationSettings());
         binding.addTileButton.setOnClickListener(v -> requestQuickSettingsTile());
@@ -856,7 +856,7 @@ public final class MainActivity extends AppCompatActivity {
     private void handleBackup(int requestCode, Uri uri) {
         try {
             if (requestCode == EXPORT_REQUEST) {
-                JSONObject out = new JSONObject(); out.put("format", "Aethon Backup v1").put("schema", 1).put("backupVersion", 1);
+                JSONObject out = new JSONObject(); out.put("format", "MehmanshahrVpn Backup v1").put("schema", 1).put("backupVersion", 1);
         for (String key : new String[]{"mode","protocol","scan","transport","ip","obfuscation","theme","language","routing","splitIncludeApps","splitExcludeApps","splitApps","splitEnabled","dnsLeak","killSwitch","quickReconnect","autoConnectAtStart","mtuMode","mtu","lanEnabled","lanPort","ech","h2Fragment","h2FragmentSize","h2FragmentDelay","noDataCheck","validateSecs","startupSecs","reconnectSecs","wiwOuterPeer","wiwInnerPeer","team","accessEmail","accessToken","gateway","upstreamProxy","wgNoProfileRetry","routeSniff","routeSniffMs"}) { Object value = preferences.getAll().get(key); if (value != null && !AndroidCoreSettings.secret(key)) out.put(key, value); }
                 for (java.util.Map.Entry<String, Object> entry : CoreSettingsBackup.exportValues(preferences.getAll()).entrySet()) out.put(entry.getKey(), entry.getValue());
                 out.put("splitEnabled", preferences.getInt("routing", 0) >= 2);
@@ -1183,15 +1183,7 @@ public final class MainActivity extends AppCompatActivity {
         catch (Exception ignored) { Toast.makeText(this, R.string.tile_add_manual, Toast.LENGTH_LONG).show(); }
     }
     private void openTelegram() {
-        Intent direct = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=hamvex"));
-        for (String packageName : new String[]{"org.telegram.messenger", "org.telegram.messenger.web"}) {
-            try {
-                direct.setPackage(packageName);
-                startActivity(direct);
-                return;
-            } catch (ActivityNotFoundException ignored) { }
-        }
-        try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/hamvex"))); }
+        try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.channel_url)))); }
         catch (ActivityNotFoundException ignored) { Toast.makeText(this, R.string.telegram_fallback, Toast.LENGTH_SHORT).show(); }
     }
     private int selectedIndex(MaterialAutoCompleteTextView view) { Object tag = view.getTag(); return tag instanceof Integer ? (Integer) tag : 0; }

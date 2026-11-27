@@ -66,7 +66,7 @@ final class LanProxyServer {
             ServerSocket socket = new ServerSocket(requestedPort, 16, local);
             upstreamHost = host; upstreamPort = targetPort;
             // Fresh credentials per session so a leaked pair cannot be replayed against a later one.
-            username = "aethon-" + randomHex(4);
+            username = "mehmanshahr-" + randomHex(4);
             password = randomHex(16);
             server = socket; address = local.getHostAddress(); port = socket.getLocalPort();
             workers.execute(() -> acceptLoop(socket));
